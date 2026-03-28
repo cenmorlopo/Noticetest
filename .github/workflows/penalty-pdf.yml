@@ -1,0 +1,97 @@
+name: BEU Penalty PDF Builder
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: beu-penalty-pdf
+  cancel-in-progress: false
+
+jobs:
+  build-penalty-pdf:
+    runs-on: windows-2025
+    permissions:
+      contents: write
+
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Ensure required files exist
+        shell: pwsh
+        run: |
+          if (!(Test-Path "penalty_calc_output.txt")) { throw "Missing penalty_calc_output.txt" }
+          if (!(Test-Path "penalty_audit.txt")) { throw "Missing penalty_audit.txt" }
+          if (!(Test-Path "build_penalty_notice_pdf.js")) { throw "Missing build_penalty_notice_pdf.js" }
+          if (!(Test-Path "package.json")) { throw "Missing package.json" }
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          npm install
+
+      - name: Run PDF builder
+        id: build_pdf
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          node build_penalty_notice_pdf.js
+
+      - name: Show generated files
+        if: always()
+        shell: pwsh
+        run: |
+          Get-ChildItem -Force
+
+      - name: Upload outputs as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: beu-penalty-pdf-output
+          path: |
+            all_notices.pdf
+            all_notices.html
+            notice_failed.txt
+            notice_log.txt
+          if-no-files-found: warn
+
+      - name: Commit generated files
+        if: always()
+        shell: pwsh
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add all_notices.pdf all_notices.html notice_failed.txt notice_log.txt
+
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "No generated file changes to commit."
+            exit 0
+          }
+
+          git commit -m "Auto-update: penalty pdf output"
+
+          git pull --rebase origin main
+          git push origin main
+
+      - name: Final status
+        if: always()
+        shell: pwsh
+        run: |
+          if ("${{ steps.build_pdf.outcome }}" -eq "failure") {
+            Write-Host "PDF builder failed. Check notice_log.txt and notice_failed.txt."
+            exit 1
+          } else {
+            Write-Host "PDF builder completed successfully."
+          }
