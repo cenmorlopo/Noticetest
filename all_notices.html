@@ -1,0 +1,2011 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>BEU Discrepancy Report</title>
+  <style>
+    @page { size: A4 portrait; margin: 8mm; }
+    * { box-sizing: border-box; }
+    html, body { background:#e9e9e9; }
+    body { margin:0; font-family:Arial, Helvetica, sans-serif; font-size:10.5px; color:#111; }
+    .page { width:210mm; min-height:297mm; margin:0 auto; background:#fff; padding:8mm; box-sizing:border-box; }
+    .main-box { border:2px solid #111; margin-bottom:8px; background:#fff; }
+    .old-result-box { margin-bottom:8px; }
+    .new-result-box { margin-top:12px; }
+    .top-merged { text-align:center; padding:8px 8px 6px 8px; }
+    .top-merged h1 { margin:0; font-size:18px; font-weight:700; }
+    .top-merged h2 { margin:3px 0 2px 0; font-size:13px; font-weight:700; }
+    .top-meta { margin-top:6px; text-align:left; border-top:1px solid #111; padding-top:6px; line-height:1.35; }
+    .meta-line { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin:2px 0; }
+    .label { font-weight:700; }
+    .sub-head { background:#efefef; border-bottom:1px solid #111; padding:4px 8px; font-weight:700; font-size:10.5px; display:flex; justify-content:space-between; align-items:center; gap:10px; line-height:1.15; }
+    .sub-head a { color:#0a58ca; text-decoration:underline; white-space:nowrap; font-weight:700; font-size:10px; }
+    table { width:100%; border-collapse:collapse; table-layout:fixed; margin:0; }
+    th, td { border:1px solid #111; padding:4px 5px; vertical-align:top; word-wrap:break-word; }
+    th { background:#f4f4f4; font-size:10px; font-weight:700; }
+    .summary-table th, .summary-table td { padding:2px 5px; vertical-align:middle; line-height:1.1; }
+    .code { width:12%; text-align:center; }
+    .name { width:38%; }
+    .num { width:8%; text-align:center; }
+    .grade { width:11%; text-align:center; }
+    .credit { width:10%; text-align:center; }
+    .fault-old { background:#fff1e6; }
+    .fault-new { background:#fff8cc; }
+    .oval { display:inline-block; min-width:34px; padding:2px 10px; border:3px solid #d79b00; border-radius:999px; background:#fff0b8; font-weight:700; text-align:center; line-height:1.15; }
+    .real-grade { display:inline-block; min-width:34px; padding:2px 10px; border:3px solid #1b8f3f; border-radius:6px; background:#dcf7e7; font-weight:700; text-align:center; line-height:1.15; }
+    .penalty-grade { display:inline-block; min-width:34px; padding:2px 10px; border:3px solid #b00000; border-radius:6px; background:#ffe7e7; font-weight:700; text-align:center; line-height:1.15; }
+    .result-line { border-top:1px solid #111; padding:4px 8px; font-size:10.2px; font-weight:700; text-align:center; line-height:1.1; word-spacing:1px; }
+    .sep { display:inline-block; margin:0 18px; }
+    .focus-box { border:2px solid #b00000; background:#fffaf9; margin-bottom:8px; }
+    .focus-head { background:#b00000; color:#fff; font-weight:700; padding:4px 8px; font-size:11.5px; }
+    .impact-pad { padding:5px 6px; }
+    .impact-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px 10px; padding:5px 0 0 0; font-size:10.5px; line-height:1.1; }
+    .metric-old { display:inline-block; padding:1px 6px; border:2px solid #d97706; background:#ffedd5; border-radius:4px; font-weight:700; line-height:1; }
+    .metric-corrected { display:inline-block; padding:1px 6px; border:2px solid #15803d; background:#dcfce7; border-radius:4px; font-weight:700; line-height:1; }
+    .metric-increase { display:inline-block; padding:1px 6px; border:2px solid #2563eb; background:#dbeafe; border-radius:4px; font-weight:700; line-height:1; }
+    .student-sheet:last-child { page-break-after:auto !important; }
+    @media print {
+      html, body { background:#fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page { width:auto !important; min-height:auto !important; margin:0 !important; padding:0 !important; background:#fff !important; }
+      .main-box, .focus-box { break-inside: avoid; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="student-sheet" style="page-break-after:always;">
+      <div class="main-box top-merged">
+        <h1>Bihar Engineering University, Patna</h1>
+        <h2>Penalty Discrepancy Report</h2>
+
+        <div class="top-meta">
+          <div class="meta-line">
+            <div><span class="label">Registration No:</span> 21101103012</div>
+            <div><span class="label">Student Name:</span> SHIVAM KUMAR</div>
+          </div>
+          <div class="meta-line">
+            <div><span class="label">Course Name:</span> CIVIL ENGINEERING</div>
+            <div><span class="label">College Name:</span> NETAJI SUBHAS INSTITUTE OF TECHNOLOGY, BIHTA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-box old-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2024 | Semester: IV</span>
+          <a href="https://results.beup.ac.in/ResultsBTech4thSem2024_B2022Pub.aspx?Sem=IV&amp;RegNo=21101103012">Open old result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">34</td>
+        <td class="num">26</td>
+        <td class="num">60</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">42</td>
+        <td class="num">26</td>
+        <td class="num">68</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">26</td>
+        <td class="num">25</td>
+        <td class="num">51</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">32</td>
+        <td class="num">25</td>
+        <td class="num">57</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">44</td>
+        <td class="num">24</td>
+        <td class="num">68</td>
+        <td class="grade">C</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">47</td>
+        <td class="num">25</td>
+        <td class="num">72</td>
+        <td class="grade">B</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">45</td>
+        <td class="num">26</td>
+        <td class="num">71</td>
+        <td class="grade">B</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">38</td>
+        <td class="num">25</td>
+        <td class="num">63</td>
+        <td class="grade">C</td>
+        <td class="credit">4.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="fault-old">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">AB</td>
+        <td class="num">0</td>
+        <td class="num">0</td>
+        <td class="grade"><span class="oval">F</span></td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">26</td>
+        <td class="num">16</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">26</td>
+        <td class="num">17</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">26</td>
+        <td class="num">18</td>
+        <td class="num">44</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 6.40
+          <span class="sep">|</span>
+          Current CGPA: 7.05
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">FAIL:100408P</span>
+        </div>
+      </div>
+
+      <div class="main-box new-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2025 | Semester: IV | Examination: December/2025</span>
+          <a href="https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&amp;semester=IV&amp;session=2021-25&amp;regNo=21101103012&amp;exam_held=December%2F2025">Open new result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">34</td>
+        <td class="num">26</td>
+        <td class="num">60</td>
+        <td class="grade">C</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">42</td>
+        <td class="num">26</td>
+        <td class="num">68</td>
+        <td class="grade">C</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">26</td>
+        <td class="num">25</td>
+        <td class="num">51</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">32</td>
+        <td class="num">25</td>
+        <td class="num">57</td>
+        <td class="grade">D</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">44</td>
+        <td class="num">24</td>
+        <td class="num">68</td>
+        <td class="grade">C</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">47</td>
+        <td class="num">25</td>
+        <td class="num">72</td>
+        <td class="grade">B</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">45</td>
+        <td class="num">26</td>
+        <td class="num">71</td>
+        <td class="grade">B</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">38</td>
+        <td class="num">25</td>
+        <td class="num">63</td>
+        <td class="grade">C</td>
+        <td class="credit">4</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="fault-new">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">38^</td>
+        <td class="num">24</td>
+        <td class="num">62</td>
+        <td class="grade"><span class="penalty-grade">D</span></td>
+        <td class="credit">2</td>
+        <td class="grade"><span class="real-grade">C</span></td>
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">26</td>
+        <td class="num">16</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">26</td>
+        <td class="num">17</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">26</td>
+        <td class="num">18</td>
+        <td class="num">44</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 7.15
+          <span class="sep">|</span>
+          Current CGPA: 7.19
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">PASS</span>
+        </div>
+      </div>
+
+      <div class="focus-box">
+        <div class="focus-head">Discrepancy Summary</div>
+        <div class="impact-pad">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th style="width:12%;">Subject Code</th>
+                <th style="width:30%;">Subject Name</th>
+                <th style="width:10%;">Credit</th>
+                <th style="width:14%;">Old Grade</th>
+                <th style="width:14%;">Published Grade</th>
+                <th style="width:20%;">Correct Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+    <tr>
+      <td class="code">100408P</td>
+      <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+      <td class="credit">2.00</td>
+      <td class="grade" style="background:#fff1e6;"><span class="oval">F</span></td>
+      <td class="grade" style="background:#fff8cc;"><span class="penalty-grade">D</span></td>
+      <td class="grade" style="background:#e8f7e8;"><span class="real-grade">C</span></td>
+    </tr></tbody>
+          </table>
+
+          <div class="impact-grid" style="margin-top:8px;border-top:1px solid #111;padding-top:8px;">
+            <div><b>Published SGPA:</b> <span class="metric-old">7.15</span></div>
+            <div><b>Corrected SGPA:</b> <span class="metric-corrected">7.23</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.08</span></div>
+
+            <div><b>Published Current CGPA:</b> <span class="metric-old">7.19</span></div>
+            <div><b>Corrected Current CGPA:</b> <span class="metric-corrected">7.21</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.02</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="student-sheet" style="page-break-after:always;">
+      <div class="main-box top-merged">
+        <h1>Bihar Engineering University, Patna</h1>
+        <h2>Penalty Discrepancy Report</h2>
+
+        <div class="top-meta">
+          <div class="meta-line">
+            <div><span class="label">Registration No:</span> 21101106003</div>
+            <div><span class="label">Student Name:</span> MANISH TIWARI</div>
+          </div>
+          <div class="meta-line">
+            <div><span class="label">Course Name:</span> CIVIL ENGINEERING</div>
+            <div><span class="label">College Name:</span> SITYOG INSTITUTE OF TECHNOLOGY, AURANGABAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-box old-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2024 | Semester: IV</span>
+          <a href="https://results.beup.ac.in/ResultsBTech4thSem2024_B2022Pub.aspx?Sem=IV&amp;RegNo=21101106003">Open old result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">35</td>
+        <td class="num">28</td>
+        <td class="num">63</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">25</td>
+        <td class="num">28</td>
+        <td class="num">53</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">32^</td>
+        <td class="num">27</td>
+        <td class="num">59</td>
+        <td class="grade">P</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">26</td>
+        <td class="num">26</td>
+        <td class="num">52</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="fault-old">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">16^</td>
+        <td class="num">27</td>
+        <td class="num">43</td>
+        <td class="grade"><span class="oval">F</span></td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">30</td>
+        <td class="num">24</td>
+        <td class="num">54</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">28</td>
+        <td class="num">27</td>
+        <td class="num">55</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">43</td>
+        <td class="num">24</td>
+        <td class="num">67</td>
+        <td class="grade">C</td>
+        <td class="credit">4.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">AB</td>
+        <td class="num">0</td>
+        <td class="num">0</td>
+        <td class="grade">F</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">18</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">18</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">24</td>
+        <td class="num">16</td>
+        <td class="num">40</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 7.06
+          <span class="sep">|</span>
+          Current CGPA: 6.25
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">FAIL:100408P,101405</span>
+        </div>
+      </div>
+
+      <div class="main-box new-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2025 | Semester: IV | Examination: December/2025</span>
+          <a href="https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&amp;semester=IV&amp;session=2021-25&amp;regNo=21101106003&amp;exam_held=December%2F2025">Open new result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">35</td>
+        <td class="num">28</td>
+        <td class="num">63</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">25</td>
+        <td class="num">28</td>
+        <td class="num">53</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">32^</td>
+        <td class="num">27</td>
+        <td class="num">59</td>
+        <td class="grade">P</td>
+        <td class="credit">2.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">26</td>
+        <td class="num">26</td>
+        <td class="num">52</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="fault-new">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">30^</td>
+        <td class="num">27</td>
+        <td class="num">57</td>
+        <td class="grade"><span class="penalty-grade">P</span></td>
+        <td class="credit">3.00</td>
+        <td class="grade"><span class="real-grade">D</span></td>
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">30</td>
+        <td class="num">24</td>
+        <td class="num">54</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">28</td>
+        <td class="num">27</td>
+        <td class="num">55</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">43</td>
+        <td class="num">24</td>
+        <td class="num">67</td>
+        <td class="grade">C</td>
+        <td class="credit">4.00</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">AB</td>
+        <td class="num">AB</td>
+        <td class="num">0</td>
+        <td class="grade">F</td>
+        <td class="credit">2.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">18</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">18</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">24</td>
+        <td class="num">16</td>
+        <td class="num">40</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 5.92
+          <span class="sep">|</span>
+          Current CGPA: 6.69
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">FAIL:100408P</span>
+        </div>
+      </div>
+
+      <div class="focus-box">
+        <div class="focus-head">Discrepancy Summary</div>
+        <div class="impact-pad">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th style="width:12%;">Subject Code</th>
+                <th style="width:30%;">Subject Name</th>
+                <th style="width:10%;">Credit</th>
+                <th style="width:14%;">Old Grade</th>
+                <th style="width:14%;">Published Grade</th>
+                <th style="width:20%;">Correct Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+    <tr>
+      <td class="code">101405</td>
+      <td class="name">Introduction to Solid Mechanics</td>
+      <td class="credit">3.00</td>
+      <td class="grade" style="background:#fff1e6;"><span class="oval">F</span></td>
+      <td class="grade" style="background:#fff8cc;"><span class="penalty-grade">P</span></td>
+      <td class="grade" style="background:#e8f7e8;"><span class="real-grade">D</span></td>
+    </tr></tbody>
+          </table>
+
+          <div class="impact-grid" style="margin-top:8px;border-top:1px solid #111;padding-top:8px;">
+            <div><b>Published SGPA:</b> <span class="metric-old">5.92</span></div>
+            <div><b>Corrected SGPA:</b> <span class="metric-corrected">6.04</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.12</span></div>
+
+            <div><b>Published Current CGPA:</b> <span class="metric-old">6.69</span></div>
+            <div><b>Corrected Current CGPA:</b> <span class="metric-corrected">6.73</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.04</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="student-sheet" style="page-break-after:always;">
+      <div class="main-box top-merged">
+        <h1>Bihar Engineering University, Patna</h1>
+        <h2>Penalty Discrepancy Report</h2>
+
+        <div class="top-meta">
+          <div class="meta-line">
+            <div><span class="label">Registration No:</span> 21101106007</div>
+            <div><span class="label">Student Name:</span> GULSAN KUMAR</div>
+          </div>
+          <div class="meta-line">
+            <div><span class="label">Course Name:</span> CIVIL ENGINEERING</div>
+            <div><span class="label">College Name:</span> SITYOG INSTITUTE OF TECHNOLOGY, AURANGABAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-box old-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2024 | Semester: IV</span>
+          <a href="https://results.beup.ac.in/ResultsBTech4thSem2024_B2022Pub.aspx?Sem=IV&amp;RegNo=21101106007">Open old result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">41</td>
+        <td class="num">27</td>
+        <td class="num">68</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">33</td>
+        <td class="num">27</td>
+        <td class="num">60</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="fault-old">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">17^</td>
+        <td class="num">28</td>
+        <td class="num">45</td>
+        <td class="grade"><span class="oval">F</span></td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">28</td>
+        <td class="num">28</td>
+        <td class="num">56</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">33^</td>
+        <td class="num">28</td>
+        <td class="num">61</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">31</td>
+        <td class="num">28</td>
+        <td class="num">59</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">35</td>
+        <td class="num">28</td>
+        <td class="num">63</td>
+        <td class="grade">C</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">45</td>
+        <td class="num">25</td>
+        <td class="num">70</td>
+        <td class="grade">B</td>
+        <td class="credit">4.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">36</td>
+        <td class="num">21</td>
+        <td class="num">57</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">18</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">18</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">25</td>
+        <td class="num">18</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 7.00
+          <span class="sep">|</span>
+          Current CGPA: 6.73
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">FAIL:101403</span>
+        </div>
+      </div>
+
+      <div class="main-box new-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2025 | Semester: IV | Examination: December/2025</span>
+          <a href="https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&amp;semester=IV&amp;session=2021-25&amp;regNo=21101106007&amp;exam_held=December%2F2025">Open new result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">41</td>
+        <td class="num">27</td>
+        <td class="num">68</td>
+        <td class="grade">C</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">33</td>
+        <td class="num">27</td>
+        <td class="num">60</td>
+        <td class="grade">C</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="fault-new">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">36^</td>
+        <td class="num">28</td>
+        <td class="num">64</td>
+        <td class="grade"><span class="penalty-grade">D</span></td>
+        <td class="credit">2</td>
+        <td class="grade"><span class="real-grade">C</span></td>
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">28</td>
+        <td class="num">28</td>
+        <td class="num">56</td>
+        <td class="grade">D</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">33^</td>
+        <td class="num">28</td>
+        <td class="num">61</td>
+        <td class="grade">D</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">31</td>
+        <td class="num">28</td>
+        <td class="num">59</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">35</td>
+        <td class="num">28</td>
+        <td class="num">63</td>
+        <td class="grade">C</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">45</td>
+        <td class="num">25</td>
+        <td class="num">70</td>
+        <td class="grade">B</td>
+        <td class="credit">4</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">36</td>
+        <td class="num">21</td>
+        <td class="num">57</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">18</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">18</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">25</td>
+        <td class="num">18</td>
+        <td class="num">43</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 6.92
+          <span class="sep">|</span>
+          Current CGPA: 7
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">PASS</span>
+        </div>
+      </div>
+
+      <div class="focus-box">
+        <div class="focus-head">Discrepancy Summary</div>
+        <div class="impact-pad">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th style="width:12%;">Subject Code</th>
+                <th style="width:30%;">Subject Name</th>
+                <th style="width:10%;">Credit</th>
+                <th style="width:14%;">Old Grade</th>
+                <th style="width:14%;">Published Grade</th>
+                <th style="width:20%;">Correct Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+    <tr>
+      <td class="code">101403</td>
+      <td class="name">Engineering Geology</td>
+      <td class="credit">2.00</td>
+      <td class="grade" style="background:#fff1e6;"><span class="oval">F</span></td>
+      <td class="grade" style="background:#fff8cc;"><span class="penalty-grade">D</span></td>
+      <td class="grade" style="background:#e8f7e8;"><span class="real-grade">C</span></td>
+    </tr></tbody>
+          </table>
+
+          <div class="impact-grid" style="margin-top:8px;border-top:1px solid #111;padding-top:8px;">
+            <div><b>Published SGPA:</b> <span class="metric-old">6.92</span></div>
+            <div><b>Corrected SGPA:</b> <span class="metric-corrected">7.00</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.08</span></div>
+
+            <div><b>Published Current CGPA:</b> <span class="metric-old">7</span></div>
+            <div><b>Corrected Current CGPA:</b> <span class="metric-corrected">7.02</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.02</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="student-sheet" style="page-break-after:always;">
+      <div class="main-box top-merged">
+        <h1>Bihar Engineering University, Patna</h1>
+        <h2>Penalty Discrepancy Report</h2>
+
+        <div class="top-meta">
+          <div class="meta-line">
+            <div><span class="label">Registration No:</span> 21101106008</div>
+            <div><span class="label">Student Name:</span> VIKAS KUMAR</div>
+          </div>
+          <div class="meta-line">
+            <div><span class="label">Course Name:</span> CIVIL ENGINEERING</div>
+            <div><span class="label">College Name:</span> SITYOG INSTITUTE OF TECHNOLOGY, AURANGABAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-box old-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2024 | Semester: IV</span>
+          <a href="https://results.beup.ac.in/ResultsBTech4thSem2024_B2022Pub.aspx?Sem=IV&amp;RegNo=21101106008">Open old result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">38</td>
+        <td class="num">26</td>
+        <td class="num">64</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">33</td>
+        <td class="num">25</td>
+        <td class="num">58</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="fault-old">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">18^</td>
+        <td class="num">27</td>
+        <td class="num">45</td>
+        <td class="grade"><span class="oval">F</span></td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">39^</td>
+        <td class="num">27</td>
+        <td class="num">66</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">27^</td>
+        <td class="num">25</td>
+        <td class="num">52</td>
+        <td class="grade">P</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">50</td>
+        <td class="num">25</td>
+        <td class="num">75</td>
+        <td class="grade">B</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">33^</td>
+        <td class="num">25</td>
+        <td class="num">58</td>
+        <td class="grade">P</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">42</td>
+        <td class="num">23</td>
+        <td class="num">65</td>
+        <td class="grade">C</td>
+        <td class="credit">4.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">33</td>
+        <td class="num">18</td>
+        <td class="num">51</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">17</td>
+        <td class="num">41</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">17</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">23</td>
+        <td class="num">16</td>
+        <td class="num">39</td>
+        <td class="grade">B</td>
+        <td class="credit">1.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 6.40
+          <span class="sep">|</span>
+          Current CGPA: 6.63
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">FAIL:101403</span>
+        </div>
+      </div>
+
+      <div class="main-box new-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2025 | Semester: IV | Examination: December/2025</span>
+          <a href="https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&amp;semester=IV&amp;session=2021-25&amp;regNo=21101106008&amp;exam_held=December%2F2025">Open new result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">38</td>
+        <td class="num">26</td>
+        <td class="num">64</td>
+        <td class="grade">C</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">33</td>
+        <td class="num">25</td>
+        <td class="num">58</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="fault-new">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">28^</td>
+        <td class="num">27</td>
+        <td class="num">55</td>
+        <td class="grade"><span class="penalty-grade">P</span></td>
+        <td class="credit">2</td>
+        <td class="grade"><span class="real-grade">D</span></td>
+      </tr>
+      <tr class="">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">39^</td>
+        <td class="num">27</td>
+        <td class="num">66</td>
+        <td class="grade">D</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">27^</td>
+        <td class="num">25</td>
+        <td class="num">52</td>
+        <td class="grade">P</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">50</td>
+        <td class="num">25</td>
+        <td class="num">75</td>
+        <td class="grade">B</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">33^</td>
+        <td class="num">25</td>
+        <td class="num">58</td>
+        <td class="grade">P</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">42</td>
+        <td class="num">23</td>
+        <td class="num">65</td>
+        <td class="grade">C</td>
+        <td class="credit">4</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">33</td>
+        <td class="num">18</td>
+        <td class="num">51</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">17</td>
+        <td class="num">41</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">17</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">23</td>
+        <td class="num">16</td>
+        <td class="num">39</td>
+        <td class="grade">B</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 6.38
+          <span class="sep">|</span>
+          Current CGPA: 6.74
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">PASS</span>
+        </div>
+      </div>
+
+      <div class="focus-box">
+        <div class="focus-head">Discrepancy Summary</div>
+        <div class="impact-pad">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th style="width:12%;">Subject Code</th>
+                <th style="width:30%;">Subject Name</th>
+                <th style="width:10%;">Credit</th>
+                <th style="width:14%;">Old Grade</th>
+                <th style="width:14%;">Published Grade</th>
+                <th style="width:20%;">Correct Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+    <tr>
+      <td class="code">101403</td>
+      <td class="name">Engineering Geology</td>
+      <td class="credit">2.00</td>
+      <td class="grade" style="background:#fff1e6;"><span class="oval">F</span></td>
+      <td class="grade" style="background:#fff8cc;"><span class="penalty-grade">P</span></td>
+      <td class="grade" style="background:#e8f7e8;"><span class="real-grade">D</span></td>
+    </tr></tbody>
+          </table>
+
+          <div class="impact-grid" style="margin-top:8px;border-top:1px solid #111;padding-top:8px;">
+            <div><b>Published SGPA:</b> <span class="metric-old">6.38</span></div>
+            <div><b>Corrected SGPA:</b> <span class="metric-corrected">6.46</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.08</span></div>
+
+            <div><b>Published Current CGPA:</b> <span class="metric-old">6.74</span></div>
+            <div><b>Corrected Current CGPA:</b> <span class="metric-corrected">6.77</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.03</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="student-sheet" style="page-break-after:always;">
+      <div class="main-box top-merged">
+        <h1>Bihar Engineering University, Patna</h1>
+        <h2>Penalty Discrepancy Report</h2>
+
+        <div class="top-meta">
+          <div class="meta-line">
+            <div><span class="label">Registration No:</span> 21101106018</div>
+            <div><span class="label">Student Name:</span> RANJAN KUMAR</div>
+          </div>
+          <div class="meta-line">
+            <div><span class="label">Course Name:</span> CIVIL ENGINEERING</div>
+            <div><span class="label">College Name:</span> SITYOG INSTITUTE OF TECHNOLOGY, AURANGABAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-box old-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2024 | Semester: IV</span>
+          <a href="https://results.beup.ac.in/ResultsBTech4thSem2024_B2022Pub.aspx?Sem=IV&amp;RegNo=21101106018">Open old result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">42</td>
+        <td class="num">25</td>
+        <td class="num">67</td>
+        <td class="grade">C</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">25</td>
+        <td class="num">25</td>
+        <td class="num">50</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">27</td>
+        <td class="num">27</td>
+        <td class="num">54</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="fault-old">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">12^</td>
+        <td class="num">27</td>
+        <td class="num">39</td>
+        <td class="grade"><span class="oval">F</span></td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">27^</td>
+        <td class="num">25</td>
+        <td class="num">52</td>
+        <td class="grade">P</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">34</td>
+        <td class="num">24</td>
+        <td class="num">58</td>
+        <td class="grade">D</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">25</td>
+        <td class="num">25</td>
+        <td class="num">50</td>
+        <td class="grade">D</td>
+        <td class="credit">3.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">25</td>
+        <td class="num">21</td>
+        <td class="num">46</td>
+        <td class="grade">P</td>
+        <td class="credit">4.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Grade</th>
+              <th class="credit">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">36^</td>
+        <td class="num">16</td>
+        <td class="num">52</td>
+        <td class="grade">P</td>
+        <td class="credit">2.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">17</td>
+        <td class="num">41</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">17</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">25</td>
+        <td class="num">16</td>
+        <td class="num">41</td>
+        <td class="grade">A</td>
+        <td class="credit">1.00</td>
+        
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 6.34
+          <span class="sep">|</span>
+          Current CGPA: 5.93
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">FAIL:101404</span>
+        </div>
+      </div>
+
+      <div class="main-box new-result-box">
+        <div class="sub-head">
+          <span>B.Tech. 4th Semester Examination, 2025 | Semester: IV | Examination: December/2025</span>
+          <a href="https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&amp;semester=IV&amp;session=2021-25&amp;regNo=21101106018&amp;exam_held=December%2F2025">Open new result</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">101401</td>
+        <td class="name">Civil Engineering - Societal &amp; Global Impact</td>
+        <td class="num">42</td>
+        <td class="num">25</td>
+        <td class="num">67</td>
+        <td class="grade">C</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101402</td>
+        <td class="name">Disaster Preparedness &amp; Planning</td>
+        <td class="num">25</td>
+        <td class="num">25</td>
+        <td class="num">50</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">27</td>
+        <td class="num">27</td>
+        <td class="num">54</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="fault-new">
+        <td class="code">101404</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">28^</td>
+        <td class="num">27</td>
+        <td class="num">55</td>
+        <td class="grade"><span class="penalty-grade">P</span></td>
+        <td class="credit">3</td>
+        <td class="grade"><span class="real-grade">D</span></td>
+      </tr>
+      <tr class="">
+        <td class="code">101405</td>
+        <td class="name">Introduction to Solid Mechanics</td>
+        <td class="num">27^</td>
+        <td class="num">25</td>
+        <td class="num">52</td>
+        <td class="grade">P</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">34</td>
+        <td class="num">24</td>
+        <td class="num">58</td>
+        <td class="grade">D</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101407</td>
+        <td class="name">Mechanical Engineering</td>
+        <td class="num">25</td>
+        <td class="num">25</td>
+        <td class="num">50</td>
+        <td class="grade">D</td>
+        <td class="credit">3</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101408</td>
+        <td class="name">Structural Analysis</td>
+        <td class="num">25</td>
+        <td class="num">21</td>
+        <td class="num">46</td>
+        <td class="grade">P</td>
+        <td class="credit">4</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="sub-head"><span>Practical</span><span></span></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="code">Subject Code</th>
+              <th class="name">Subject Name</th>
+              <th class="num">ESE</th>
+              <th class="num">IA</th>
+              <th class="num">Total</th>
+              <th class="grade">Published Grade</th>
+              <th class="credit">Credit</th>
+              <th class="grade">Correct Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr class="">
+        <td class="code">100408P</td>
+        <td class="name">MOOCs / SWAYAM / NPTEL Courses - 1</td>
+        <td class="num">36^</td>
+        <td class="num">16</td>
+        <td class="num">52</td>
+        <td class="grade">P</td>
+        <td class="credit">2</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101403P</td>
+        <td class="name">Engineering Geology</td>
+        <td class="num">24</td>
+        <td class="num">17</td>
+        <td class="num">41</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101404P</td>
+        <td class="name">Introduction to Fluid Mechanics</td>
+        <td class="num">25</td>
+        <td class="num">17</td>
+        <td class="num">42</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr>
+      <tr class="">
+        <td class="code">101406P</td>
+        <td class="name">Materials, Testing &amp; Evaluation</td>
+        <td class="num">25</td>
+        <td class="num">16</td>
+        <td class="num">41</td>
+        <td class="grade">A</td>
+        <td class="credit">1</td>
+        <td class="grade">—</td>
+      </tr></tbody>
+        </table>
+
+        <div class="result-line">
+          SGPA: 5.96
+          <span class="sep">|</span>
+          Current CGPA: 6.21
+          <span class="sep">|</span>
+          Remarks: <span style="color:#b00000;">PASS</span>
+        </div>
+      </div>
+
+      <div class="focus-box">
+        <div class="focus-head">Discrepancy Summary</div>
+        <div class="impact-pad">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th style="width:12%;">Subject Code</th>
+                <th style="width:30%;">Subject Name</th>
+                <th style="width:10%;">Credit</th>
+                <th style="width:14%;">Old Grade</th>
+                <th style="width:14%;">Published Grade</th>
+                <th style="width:20%;">Correct Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+    <tr>
+      <td class="code">101404</td>
+      <td class="name">Introduction to Fluid Mechanics</td>
+      <td class="credit">3.00</td>
+      <td class="grade" style="background:#fff1e6;"><span class="oval">F</span></td>
+      <td class="grade" style="background:#fff8cc;"><span class="penalty-grade">P</span></td>
+      <td class="grade" style="background:#e8f7e8;"><span class="real-grade">D</span></td>
+    </tr></tbody>
+          </table>
+
+          <div class="impact-grid" style="margin-top:8px;border-top:1px solid #111;padding-top:8px;">
+            <div><b>Published SGPA:</b> <span class="metric-old">5.96</span></div>
+            <div><b>Corrected SGPA:</b> <span class="metric-corrected">6.08</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.12</span></div>
+
+            <div><b>Published Current CGPA:</b> <span class="metric-old">6.21</span></div>
+            <div><b>Corrected Current CGPA:</b> <span class="metric-corrected">6.24</span></div>
+            <div><b>Increase:</b> <span class="metric-increase">0.03</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+</body>
+</html>

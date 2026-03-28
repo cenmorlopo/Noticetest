@@ -1,0 +1,8 @@
+[2026-03-28T17:17:58.301Z] Penalty rows selected for PDF: 5
+[2026-03-28T17:18:01.630Z] [1/5] 21101103012 -> OK -> https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&semester=IV&session=2021-25&regNo=21101103012&exam_held=December%2F2025
+[2026-03-28T17:18:02.713Z] [2/5] 21101106003 -> OK -> https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&semester=IV&session=2021-25&regNo=21101106003&exam_held=December%2F2025
+[2026-03-28T17:18:03.894Z] [3/5] 21101106007 -> OK -> https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&semester=IV&session=2021-25&regNo=21101106007&exam_held=December%2F2025
+[2026-03-28T17:18:04.956Z] [4/5] 21101106008 -> OK -> https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&semester=IV&session=2021-25&regNo=21101106008&exam_held=December%2F2025
+[2026-03-28T17:18:06.019Z] [5/5] 21101106018 -> OK -> https://beu-bih.ac.in/result-three?name=B.Tech.+4th+Semester+Examination%2C+2025&semester=IV&session=2021-25&regNo=21101106018&exam_held=December%2F2025
+[2026-03-28T17:18:06.020Z] HTML written: D:\a\Noticetest\Noticetest\all_notices.html
+[2026-03-28T17:18:14.985Z] PDF written: D:\a\Noticetest\Noticetest\all_notices.pdf
