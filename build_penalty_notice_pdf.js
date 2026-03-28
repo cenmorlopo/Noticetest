@@ -12,13 +12,12 @@ const FILES = {
   html: path.join(ROOT, 'all_notices.html'),
   pdf: path.join(ROOT, 'all_notices.pdf'),
   failed: path.join(ROOT, 'notice_failed.txt'),
-  log: path.join(ROOT, 'notice_log.txt')
+  log: path.join(ROOT, 'notice_log.txt'),
+  oldCacheDir: path.join(ROOT, 'old_result_cache'),
+  newCacheDir: path.join(ROOT, 'new_result_cache')
 };
 
 const CONFIG = {
-  // first test run preview only
-  // set to 3 / 5 / 10 for testing
-  // set to null after checking preview PDF
   previewMaxStudents: 5,
   previewStartIndex: 0,
 
@@ -32,12 +31,21 @@ const CONFIG = {
   oldFetchTimeoutMs: 90000,
   newFetchTimeoutMs: 45000,
   oldFetchTries: 5,
-  newFetchTries: 4
+  newFetchTries: 4,
+
+  useCache: true,
+  saveCache: true
 };
 
 function ensureFile(filePath, defaultContent = '') {
   if (!fs.existsSync(filePath)) {
     fs.writeFileSync(filePath, defaultContent, 'utf8');
+  }
+}
+
+function ensureDir(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
 }
 
@@ -82,6 +90,14 @@ function readTextLines(filePath) {
     .filter(Boolean);
 }
 
+function getOldCachePath(regNo) {
+  return path.join(FILES.oldCacheDir, `${regNo}.html`);
+}
+
+function getNewCachePath(regNo) {
+  return path.join(FILES.newCacheDir, `${regNo}.json`);
+}
+
 function loadCalcRows() {
   const lines = readTextLines(FILES.calc).filter((line) => !/^reg_no\s*\|/i.test(line));
 
@@ -113,10 +129,6 @@ function loadAuditMap() {
 
   for (const line of lines) {
     const p = splitPipe(line);
-
-    // supports BOTH:
-    // 18 fields -> no scheme column
-    // 19 fields -> scheme column present between subject_type and credit
     let row;
 
     if (p.length >= 19) {
@@ -201,11 +213,13 @@ async function fetchWithRetry(url, mode = 'html', timeoutMs = 30000, tries = 4) 
       } else if (mode === 'html') {
         const html = typeof response.data === 'string' ? response.data : '';
 
-        if (html) {
+        if (!html) {
+          if (i === tries) return { ok: false, reason: 'EMPTY_HTML' };
+        } else if (/No\s*Record\s*Found/i.test(html)) {
+          return { ok: false, reason: 'NO_RECORD' };
+        } else {
           return { ok: true, data: html };
         }
-
-        if (i === tries) return { ok: false, reason: 'EMPTY_HTML' };
       } else {
         return { ok: true, data: response.data };
       }
@@ -326,7 +340,10 @@ function parseOldHtml(html, fallbackOldUrl = '') {
     }
   }
 
-  const examTitle = normalizeText($('#ContentPlaceHolder1_DataList4_Exam_Name_0').text()) || 'B.Tech. 4th Semester Examination, 2024';
+  const examTitle =
+    normalizeText($('#ContentPlaceHolder1_DataList4_Exam_Name_0').text()) ||
+    'B.Tech. 4th Semester Examination, 2024';
+
   const remarks =
     textById('ContentPlaceHolder1_DataList3_remarkLabel_0') ||
     normalizeText(($('body').text().match(/Remarks\s*:?\s*([^\n]+)/i) || [])[1]);
@@ -498,7 +515,7 @@ function renderCase(row, resolvedRow, auditRows, oldData, newData) {
 
       <div class="main-box old-result-box">
         <div class="sub-head">
-          <span>${esc(oldData.exam_name)} | Semester: ${esc(oldData.semester)} </span>
+          <span>${esc(oldData.exam_name)} | Semester: ${esc(oldData.semester)}</span>
           <a href="${esc(resolvedRow.old_result_url)}">Open old result</a>
         </div>
 
@@ -630,263 +647,50 @@ function buildHtmlDocument(content) {
   <meta charset="utf-8" />
   <title>BEU Discrepancy Report</title>
   <style>
-    @page {
-      size: A4 portrait;
-      margin: 8mm;
-    }
-
+    @page { size: A4 portrait; margin: 8mm; }
     * { box-sizing: border-box; }
-
     html, body { background:#e9e9e9; }
-
-    body {
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      font-size:10.5px;
-      color:#111;
-    }
-
-    .page {
-      width:210mm;
-      min-height:297mm;
-      margin:0 auto;
-      background:#fff;
-      padding:8mm;
-      box-sizing:border-box;
-    }
-
-    .main-box {
-      border:2px solid #111;
-      margin-bottom:8px;
-      background:#fff;
-    }
-
+    body { margin:0; font-family:Arial, Helvetica, sans-serif; font-size:10.5px; color:#111; }
+    .page { width:210mm; min-height:297mm; margin:0 auto; background:#fff; padding:8mm; box-sizing:border-box; }
+    .main-box { border:2px solid #111; margin-bottom:8px; background:#fff; }
     .old-result-box { margin-bottom:8px; }
     .new-result-box { margin-top:12px; }
-
-    .top-merged {
-      text-align:center;
-      padding:8px 8px 6px 8px;
-    }
-
-    .top-merged h1 {
-      margin:0;
-      font-size:18px;
-      font-weight:700;
-    }
-
-    .top-merged h2 {
-      margin:3px 0 2px 0;
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .top-meta {
-      margin-top:6px;
-      text-align:left;
-      border-top:1px solid #111;
-      padding-top:6px;
-      line-height:1.35;
-    }
-
-    .meta-line {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:8px 18px;
-      margin:2px 0;
-    }
-
+    .top-merged { text-align:center; padding:8px 8px 6px 8px; }
+    .top-merged h1 { margin:0; font-size:18px; font-weight:700; }
+    .top-merged h2 { margin:3px 0 2px 0; font-size:13px; font-weight:700; }
+    .top-meta { margin-top:6px; text-align:left; border-top:1px solid #111; padding-top:6px; line-height:1.35; }
+    .meta-line { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin:2px 0; }
     .label { font-weight:700; }
-
-    .sub-head {
-      background:#efefef;
-      border-bottom:1px solid #111;
-      padding:4px 8px;
-      font-weight:700;
-      font-size:10.5px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      line-height:1.15;
-    }
-
-    .sub-head a {
-      color:#0a58ca;
-      text-decoration:underline;
-      white-space:nowrap;
-      font-weight:700;
-      font-size:10px;
-    }
-
-    table {
-      width:100%;
-      border-collapse:collapse;
-      table-layout:fixed;
-      margin:0;
-    }
-
-    th, td {
-      border:1px solid #111;
-      padding:4px 5px;
-      vertical-align:top;
-      word-wrap:break-word;
-    }
-
-    th {
-      background:#f4f4f4;
-      font-size:10px;
-      font-weight:700;
-    }
-
-    .summary-table th,
-    .summary-table td {
-      padding:2px 5px;
-      vertical-align:middle;
-      line-height:1.1;
-    }
-
-    .code   { width:12%; text-align:center; }
-    .name   { width:38%; }
-    .num    { width:8%; text-align:center; }
-    .grade  { width:11%; text-align:center; }
+    .sub-head { background:#efefef; border-bottom:1px solid #111; padding:4px 8px; font-weight:700; font-size:10.5px; display:flex; justify-content:space-between; align-items:center; gap:10px; line-height:1.15; }
+    .sub-head a { color:#0a58ca; text-decoration:underline; white-space:nowrap; font-weight:700; font-size:10px; }
+    table { width:100%; border-collapse:collapse; table-layout:fixed; margin:0; }
+    th, td { border:1px solid #111; padding:4px 5px; vertical-align:top; word-wrap:break-word; }
+    th { background:#f4f4f4; font-size:10px; font-weight:700; }
+    .summary-table th, .summary-table td { padding:2px 5px; vertical-align:middle; line-height:1.1; }
+    .code { width:12%; text-align:center; }
+    .name { width:38%; }
+    .num { width:8%; text-align:center; }
+    .grade { width:11%; text-align:center; }
     .credit { width:10%; text-align:center; }
-
     .fault-old { background:#fff1e6; }
     .fault-new { background:#fff8cc; }
-
-    .oval {
-      display:inline-block;
-      min-width:34px;
-      padding:2px 10px;
-      border:3px solid #d79b00;
-      border-radius:999px;
-      background:#fff0b8;
-      font-weight:700;
-      text-align:center;
-      line-height:1.15;
-    }
-
-    .real-grade {
-      display:inline-block;
-      min-width:34px;
-      padding:2px 10px;
-      border:3px solid #1b8f3f;
-      border-radius:6px;
-      background:#dcf7e7;
-      font-weight:700;
-      text-align:center;
-      line-height:1.15;
-    }
-
-    .penalty-grade {
-      display:inline-block;
-      min-width:34px;
-      padding:2px 10px;
-      border:3px solid #b00000;
-      border-radius:6px;
-      background:#ffe7e7;
-      font-weight:700;
-      text-align:center;
-      line-height:1.15;
-    }
-
-    .result-line {
-      border-top:1px solid #111;
-      padding:4px 8px;
-      font-size:10.2px;
-      font-weight:700;
-      text-align:center;
-      line-height:1.1;
-      word-spacing:1px;
-    }
-
-    .sep {
-      display:inline-block;
-      margin:0 18px;
-    }
-
-    .focus-box {
-      border:2px solid #b00000;
-      background:#fffaf9;
-      margin-bottom:8px;
-    }
-
-    .focus-head {
-      background:#b00000;
-      color:#fff;
-      font-weight:700;
-      padding:4px 8px;
-      font-size:11.5px;
-    }
-
-    .impact-pad {
-      padding:5px 6px;
-    }
-
-    .impact-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:4px 10px;
-      padding:5px 0 0 0;
-      font-size:10.5px;
-      line-height:1.1;
-    }
-
-    .metric-old {
-      display:inline-block;
-      padding:1px 6px;
-      border:2px solid #d97706;
-      background:#ffedd5;
-      border-radius:4px;
-      font-weight:700;
-      line-height:1;
-    }
-
-    .metric-corrected {
-      display:inline-block;
-      padding:1px 6px;
-      border:2px solid #15803d;
-      background:#dcfce7;
-      border-radius:4px;
-      font-weight:700;
-      line-height:1;
-    }
-
-    .metric-increase {
-      display:inline-block;
-      padding:1px 6px;
-      border:2px solid #2563eb;
-      background:#dbeafe;
-      border-radius:4px;
-      font-weight:700;
-      line-height:1;
-    }
-
-    .student-sheet:last-child {
-      page-break-after:auto !important;
-    }
-
+    .oval { display:inline-block; min-width:34px; padding:2px 10px; border:3px solid #d79b00; border-radius:999px; background:#fff0b8; font-weight:700; text-align:center; line-height:1.15; }
+    .real-grade { display:inline-block; min-width:34px; padding:2px 10px; border:3px solid #1b8f3f; border-radius:6px; background:#dcf7e7; font-weight:700; text-align:center; line-height:1.15; }
+    .penalty-grade { display:inline-block; min-width:34px; padding:2px 10px; border:3px solid #b00000; border-radius:6px; background:#ffe7e7; font-weight:700; text-align:center; line-height:1.15; }
+    .result-line { border-top:1px solid #111; padding:4px 8px; font-size:10.2px; font-weight:700; text-align:center; line-height:1.1; word-spacing:1px; }
+    .sep { display:inline-block; margin:0 18px; }
+    .focus-box { border:2px solid #b00000; background:#fffaf9; margin-bottom:8px; }
+    .focus-head { background:#b00000; color:#fff; font-weight:700; padding:4px 8px; font-size:11.5px; }
+    .impact-pad { padding:5px 6px; }
+    .impact-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px 10px; padding:5px 0 0 0; font-size:10.5px; line-height:1.1; }
+    .metric-old { display:inline-block; padding:1px 6px; border:2px solid #d97706; background:#ffedd5; border-radius:4px; font-weight:700; line-height:1; }
+    .metric-corrected { display:inline-block; padding:1px 6px; border:2px solid #15803d; background:#dcfce7; border-radius:4px; font-weight:700; line-height:1; }
+    .metric-increase { display:inline-block; padding:1px 6px; border:2px solid #2563eb; background:#dbeafe; border-radius:4px; font-weight:700; line-height:1; }
+    .student-sheet:last-child { page-break-after:auto !important; }
     @media print {
-      html, body {
-        background:#fff !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      .page {
-        width:auto !important;
-        min-height:auto !important;
-        margin:0 !important;
-        padding:0 !important;
-        background:#fff !important;
-      }
-
-      .main-box,
-      .focus-box {
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
+      html, body { background:#fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page { width:auto !important; min-height:auto !important; margin:0 !important; padding:0 !important; background:#fff !important; }
+      .main-box, .focus-box { break-inside: avoid; page-break-inside: avoid; }
     }
   </style>
 </head>
@@ -939,9 +743,40 @@ async function renderPdf(htmlPath, pdfPath) {
   }
 }
 
+function loadOldFromCache(regNo) {
+  const file = getOldCachePath(regNo);
+  if (!CONFIG.useCache || !fs.existsSync(file)) return null;
+  const html = fs.readFileSync(file, 'utf8');
+  return html ? html : null;
+}
+
+function loadNewFromCache(regNo) {
+  const file = getNewCachePath(regNo);
+  if (!CONFIG.useCache || !fs.existsSync(file)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function saveOldToCache(regNo, html) {
+  if (!CONFIG.saveCache) return;
+  ensureDir(FILES.oldCacheDir);
+  fs.writeFileSync(getOldCachePath(regNo), html, 'utf8');
+}
+
+function saveNewToCache(regNo, json) {
+  if (!CONFIG.saveCache) return;
+  ensureDir(FILES.newCacheDir);
+  fs.writeFileSync(getNewCachePath(regNo), JSON.stringify(json, null, 2), 'utf8');
+}
+
 async function main() {
   ensureFile(FILES.calc);
   ensureFile(FILES.audit);
+  ensureDir(FILES.oldCacheDir);
+  ensureDir(FILES.newCacheDir);
   resetOutputs();
 
   let calcRows = sortPenaltyRows(
@@ -984,44 +819,74 @@ async function main() {
       continue;
     }
 
-    const oldFetch = await fetchWithRetry(
-      resolvedRow.old_result_url,
-      'html',
-      CONFIG.oldFetchTimeoutMs,
-      CONFIG.oldFetchTries
-    );
+    let oldHtml = loadOldFromCache(row.reg_no);
 
-    if (!oldFetch.ok) {
-      fs.appendFileSync(
-        FILES.failed,
-        `${row.reg_no} | OLD_FETCH_FAILED | ${resolvedRow.old_result_url} | ${oldFetch.reason}\n`,
-        'utf8'
+    if (!oldHtml) {
+      const oldFetch = await fetchWithRetry(
+        resolvedRow.old_result_url,
+        'html',
+        CONFIG.oldFetchTimeoutMs,
+        CONFIG.oldFetchTries
       );
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_FETCH_FAILED (${oldFetch.reason}) -> ${resolvedRow.new_result_url}`);
-      continue;
+
+      if (!oldFetch.ok) {
+        fs.appendFileSync(
+          FILES.failed,
+          `${row.reg_no} | OLD_FETCH_FAILED | ${resolvedRow.old_result_url} | ${oldFetch.reason}\n`,
+          'utf8'
+        );
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_FETCH_FAILED (${oldFetch.reason}) -> ${resolvedRow.old_result_url}`);
+        continue;
+      }
+
+      oldHtml = oldFetch.data;
+      saveOldToCache(row.reg_no, oldHtml);
+    } else {
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_CACHE_HIT -> ${resolvedRow.old_result_url}`);
     }
 
     const newApiUrl = deriveNewApiUrl(resolvedRow);
-    const newFetch = await fetchWithRetry(
-      newApiUrl,
-      'json',
-      CONFIG.newFetchTimeoutMs,
-      CONFIG.newFetchTries
-    );
+    let newJson = loadNewFromCache(row.reg_no);
 
-    if (!newFetch.ok) {
-      fs.appendFileSync(
-        FILES.failed,
-        `${row.reg_no} | NEW_FETCH_FAILED | ${resolvedRow.new_result_url} | ${newFetch.reason}\n`,
-        'utf8'
+    if (!newJson) {
+      const newFetch = await fetchWithRetry(
+        newApiUrl,
+        'json',
+        CONFIG.newFetchTimeoutMs,
+        CONFIG.newFetchTries
       );
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_FETCH_FAILED (${newFetch.reason}) -> ${resolvedRow.new_result_url}`);
-      continue;
+
+      if (!newFetch.ok) {
+        fs.appendFileSync(
+          FILES.failed,
+          `${row.reg_no} | NEW_FETCH_FAILED | ${resolvedRow.new_result_url} | ${newFetch.reason}\n`,
+          'utf8'
+        );
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_FETCH_FAILED (${newFetch.reason}) -> ${resolvedRow.new_result_url}`);
+        continue;
+      }
+
+      newJson = newFetch.data;
+      saveNewToCache(row.reg_no, newJson);
+    } else {
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_CACHE_HIT -> ${resolvedRow.new_result_url}`);
     }
 
     try {
-      const oldData = parseOldHtml(oldFetch.data, resolvedRow.old_result_url);
-      const newData = parseNewJson(newFetch.data, resolvedRow);
+      const oldData = parseOldHtml(oldHtml, resolvedRow.old_result_url);
+      const newData = parseNewJson(newJson, resolvedRow);
+
+      if (!oldData.theory.length && !oldData.practical.length) {
+        fs.appendFileSync(FILES.failed, `${row.reg_no} | OLD_PARSE_EMPTY | ${resolvedRow.old_result_url}\n`, 'utf8');
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_PARSE_EMPTY -> ${resolvedRow.old_result_url}`);
+        continue;
+      }
+
+      if (!newData.theory.length && !newData.practical.length) {
+        fs.appendFileSync(FILES.failed, `${row.reg_no} | NEW_PARSE_EMPTY | ${resolvedRow.new_result_url}\n`, 'utf8');
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_PARSE_EMPTY -> ${resolvedRow.new_result_url}`);
+        continue;
+      }
 
       rendered.push(renderCase(row, resolvedRow, auditRows, oldData, newData));
       log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OK -> ${resolvedRow.new_result_url}`);
