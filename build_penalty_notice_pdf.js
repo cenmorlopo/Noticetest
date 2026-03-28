@@ -19,7 +19,6 @@ const FILES = {
 };
 
 const CONFIG = {
-  // null = use all reg nos from notice_input.txt
   previewMaxStudents: null,
   previewStartIndex: 0,
 
@@ -86,6 +85,7 @@ function splitCsvField(value) {
 }
 
 function readTextLines(filePath) {
+  if (!fs.existsSync(filePath)) return [];
   return fs.readFileSync(filePath, 'utf8')
     .split(/\r?\n/)
     .map((x) => x.trim())
@@ -127,6 +127,7 @@ function loadInputRegNos() {
 }
 
 function loadCalcRows() {
+  ensureFile(FILES.calc, '');
   const lines = readTextLines(FILES.calc).filter((line) => !/^reg_no\s*\|/i.test(line));
 
   return lines.map((line) => {
@@ -154,13 +155,16 @@ function loadCalcRows() {
 function loadCalcMap() {
   const rows = loadCalcRows();
   const map = new Map();
+
   for (const row of rows) {
-    map.set(row.reg_no, row);
+    if (row.reg_no) map.set(row.reg_no, row);
   }
-  return map;
+
+  return { rows, map };
 }
 
 function loadAuditMap() {
+  ensureFile(FILES.audit, '');
   const lines = readTextLines(FILES.audit).filter((line) => !/^reg_no\s*\|/i.test(line));
   const byReg = new Map();
 
@@ -768,12 +772,7 @@ async function renderPdf(htmlPath, pdfPath) {
       printBackground: true,
       preferCSSPageSize: true,
       timeout: 0,
-      margin: {
-        top: '0',
-        right: '0',
-        bottom: '0',
-        left: '0'
-      }
+      margin: { top: '0', right: '0', bottom: '0', left: '0' }
     });
   } finally {
     await browser.close();
@@ -784,7 +783,7 @@ function loadOldFromCache(regNo) {
   const file = getOldCachePath(regNo);
   if (!CONFIG.useCache || !fs.existsSync(file)) return null;
   const html = fs.readFileSync(file, 'utf8');
-  return html ? html : null;
+  return html || null;
 }
 
 function loadNewFromCache(regNo) {
@@ -818,8 +817,12 @@ async function main() {
   resetOutputs();
 
   const inputRegNos = loadInputRegNos();
-  const calcMap = loadCalcMap();
+  const { rows: calcRowsAll, map: calcMap } = loadCalcMap();
   const auditMap = loadAuditMap();
+
+  log(`notice_input reg nos: ${inputRegNos.length}`);
+  log(`penalty_calc rows: ${calcRowsAll.length}`);
+  log(`audit reg groups: ${auditMap.size}`);
 
   let calcRows = [];
 
@@ -842,6 +845,8 @@ async function main() {
   }
 
   calcRows = sortPenaltyRows(calcRows);
+
+  log(`matched penalty rows before preview cut: ${calcRows.length}`);
 
   if (CONFIG.previewMaxStudents !== null) {
     calcRows = calcRows.slice(
