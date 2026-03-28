@@ -7,6 +7,7 @@ const puppeteer = require('puppeteer');
 const ROOT = __dirname;
 
 const FILES = {
+  input: path.join(ROOT, 'notice_input.txt'),
   calc: path.join(ROOT, 'penalty_calc_output.txt'),
   audit: path.join(ROOT, 'penalty_audit.txt'),
   html: path.join(ROOT, 'all_notices.html'),
@@ -18,7 +19,8 @@ const FILES = {
 };
 
 const CONFIG = {
-  previewMaxStudents: 5,
+  // null = use all reg nos from notice_input.txt
+  previewMaxStudents: null,
   previewStartIndex: 0,
 
   newResult: {
@@ -98,6 +100,32 @@ function getNewCachePath(regNo) {
   return path.join(FILES.newCacheDir, `${regNo}.json`);
 }
 
+function extractRegNo(line) {
+  const m = String(line).match(/\b\d{11}\b/);
+  return m ? m[0] : '';
+}
+
+function loadInputRegNos() {
+  ensureFile(FILES.input, '');
+  const lines = readTextLines(FILES.input)
+    .filter((line) => !line.startsWith('#'))
+    .filter((line) => !/^reg_no\b/i.test(line));
+
+  const regNos = [];
+  const seen = new Set();
+
+  for (const line of lines) {
+    const regNo = extractRegNo(line);
+    if (!regNo) continue;
+    if (!seen.has(regNo)) {
+      seen.add(regNo);
+      regNos.push(regNo);
+    }
+  }
+
+  return regNos;
+}
+
 function loadCalcRows() {
   const lines = readTextLines(FILES.calc).filter((line) => !/^reg_no\s*\|/i.test(line));
 
@@ -121,6 +149,15 @@ function loadCalcRows() {
       new_result_url: p[13] || ''
     };
   });
+}
+
+function loadCalcMap() {
+  const rows = loadCalcRows();
+  const map = new Map();
+  for (const row of rows) {
+    map.set(row.reg_no, row);
+  }
+  return map;
 }
 
 function loadAuditMap() {
@@ -773,17 +810,38 @@ function saveNewToCache(regNo, json) {
 }
 
 async function main() {
+  ensureFile(FILES.input);
   ensureFile(FILES.calc);
   ensureFile(FILES.audit);
   ensureDir(FILES.oldCacheDir);
   ensureDir(FILES.newCacheDir);
   resetOutputs();
 
-  let calcRows = sortPenaltyRows(
-    loadCalcRows().filter((row) => String(row.status).toUpperCase().includes('PENALTY_CONFIRMED'))
-  );
-
+  const inputRegNos = loadInputRegNos();
+  const calcMap = loadCalcMap();
   const auditMap = loadAuditMap();
+
+  let calcRows = [];
+
+  for (const regNo of inputRegNos) {
+    const calcRow = calcMap.get(regNo);
+
+    if (!calcRow) {
+      fs.appendFileSync(FILES.failed, `${regNo} | NOT_FOUND_IN_PENALTY_CALC\n`, 'utf8');
+      log(`${regNo} -> NOT_FOUND_IN_PENALTY_CALC`);
+      continue;
+    }
+
+    if (!String(calcRow.status).toUpperCase().includes('PENALTY_CONFIRMED')) {
+      fs.appendFileSync(FILES.failed, `${regNo} | STATUS_NOT_PENALTY_CONFIRMED | ${calcRow.status}\n`, 'utf8');
+      log(`${regNo} -> STATUS_NOT_PENALTY_CONFIRMED (${calcRow.status})`);
+      continue;
+    }
+
+    calcRows.push(calcRow);
+  }
+
+  calcRows = sortPenaltyRows(calcRows);
 
   if (CONFIG.previewMaxStudents !== null) {
     calcRows = calcRows.slice(
