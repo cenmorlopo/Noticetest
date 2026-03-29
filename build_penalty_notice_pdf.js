@@ -7,7 +7,6 @@ const puppeteer = require('puppeteer');
 const ROOT = __dirname;
 
 const FILES = {
-  input: path.join(ROOT, 'notice_input.txt'),
   calc: path.join(ROOT, 'penalty_calc_output.txt'),
   audit: path.join(ROOT, 'penalty_audit.txt'),
   html: path.join(ROOT, 'all_notices.html'),
@@ -19,6 +18,7 @@ const FILES = {
 };
 
 const CONFIG = {
+  // null = full check of all PENALTY_CONFIRMED rows
   previewMaxStudents: null,
   previewStartIndex: 0,
 
@@ -100,34 +100,7 @@ function getNewCachePath(regNo) {
   return path.join(FILES.newCacheDir, `${regNo}.json`);
 }
 
-function extractRegNo(line) {
-  const m = String(line).match(/\b\d{11}\b/);
-  return m ? m[0] : '';
-}
-
-function loadInputRegNos() {
-  ensureFile(FILES.input, '');
-  const lines = readTextLines(FILES.input)
-    .filter((line) => !line.startsWith('#'))
-    .filter((line) => !/^reg_no\b/i.test(line));
-
-  const regNos = [];
-  const seen = new Set();
-
-  for (const line of lines) {
-    const regNo = extractRegNo(line);
-    if (!regNo) continue;
-    if (!seen.has(regNo)) {
-      seen.add(regNo);
-      regNos.push(regNo);
-    }
-  }
-
-  return regNos;
-}
-
 function loadCalcRows() {
-  ensureFile(FILES.calc, '');
   const lines = readTextLines(FILES.calc).filter((line) => !/^reg_no\s*\|/i.test(line));
 
   return lines.map((line) => {
@@ -152,19 +125,7 @@ function loadCalcRows() {
   });
 }
 
-function loadCalcMap() {
-  const rows = loadCalcRows();
-  const map = new Map();
-
-  for (const row of rows) {
-    if (row.reg_no) map.set(row.reg_no, row);
-  }
-
-  return { rows, map };
-}
-
 function loadAuditMap() {
-  ensureFile(FILES.audit, '');
   const lines = readTextLines(FILES.audit).filter((line) => !/^reg_no\s*\|/i.test(line));
   const byReg = new Map();
 
@@ -481,6 +442,35 @@ function buildBadge(type, value) {
   return `<span class="oval">${safe}</span>`;
 }
 
+function buildFallbackRowsFromAudit(auditRows, type, mode) {
+  const wanted = auditRows.filter((r) => String(r.subject_type).toLowerCase() === type);
+  const shouldMap = new Map(auditRows.map((x) => [x.subject_code, x.should_be_grade]));
+
+  return wanted.map((r) => {
+    let gradeCell = '';
+    let correctCell = '—';
+
+    if (mode === 'old') {
+      gradeCell = buildBadge('old', r.old_shown_grade);
+    } else {
+      gradeCell = buildBadge('published', r.new_shown_grade);
+      correctCell = buildBadge('expected', shouldMap.get(r.subject_code) || '');
+    }
+
+    return `
+      <tr class="${mode === 'old' ? 'fault-old' : 'fault-new'}">
+        <td class="code">${esc(r.subject_code)}</td>
+        <td class="name">${esc(r.subject_name)}</td>
+        <td class="num">${esc(r.new_ese || '-')}</td>
+        <td class="num">${esc(r.new_ia || '-')}</td>
+        <td class="num">${esc(r.new_total || '-')}</td>
+        <td class="grade">${gradeCell}</td>
+        <td class="credit">${esc(r.credit || '-')}</td>
+        ${mode === 'new' ? `<td class="grade">${correctCell}</td>` : ''}
+      </tr>`;
+  }).join('');
+}
+
 function renderSubjectRows(subjects, penalizedSet, shouldMap, mode) {
   return subjects.map((subject) => {
     const isPenalized = penalizedSet.has(subject.code);
@@ -514,10 +504,21 @@ function renderCase(row, resolvedRow, auditRows, oldData, newData) {
   const penalizedSet = new Set(auditRows.map((x) => x.subject_code));
   const shouldMap = new Map(auditRows.map((x) => [x.subject_code, x.should_be_grade]));
 
-  const oldTheoryRows = renderSubjectRows(oldData.theory, penalizedSet, shouldMap, 'old');
-  const oldPracticalRows = renderSubjectRows(oldData.practical, penalizedSet, shouldMap, 'old');
-  const newTheoryRows = renderSubjectRows(newData.theory, penalizedSet, shouldMap, 'new');
-  const newPracticalRows = renderSubjectRows(newData.practical, penalizedSet, shouldMap, 'new');
+  const oldTheoryRows = oldData.theory.length
+    ? renderSubjectRows(oldData.theory, penalizedSet, shouldMap, 'old')
+    : buildFallbackRowsFromAudit(auditRows, 'theory', 'old');
+
+  const oldPracticalRows = oldData.practical.length
+    ? renderSubjectRows(oldData.practical, penalizedSet, shouldMap, 'old')
+    : buildFallbackRowsFromAudit(auditRows, 'practical', 'old');
+
+  const newTheoryRows = newData.theory.length
+    ? renderSubjectRows(newData.theory, penalizedSet, shouldMap, 'new')
+    : buildFallbackRowsFromAudit(auditRows, 'theory', 'new');
+
+  const newPracticalRows = newData.practical.length
+    ? renderSubjectRows(newData.practical, penalizedSet, shouldMap, 'new')
+    : buildFallbackRowsFromAudit(auditRows, 'practical', 'new');
 
   const summaryRows = auditRows.map((item) => `
     <tr>
@@ -545,11 +546,11 @@ function renderCase(row, resolvedRow, auditRows, oldData, newData) {
         <div class="top-meta">
           <div class="meta-line">
             <div><span class="label">Registration No:</span> ${esc(row.reg_no)}</div>
-            <div><span class="label">Student Name:</span> ${esc(newData.student_name || oldData.student_name)}</div>
+            <div><span class="label">Student Name:</span> ${esc(newData.student_name || oldData.student_name || '-')}</div>
           </div>
           <div class="meta-line">
-            <div><span class="label">Course Name:</span> ${esc(newData.course_name || oldData.course_name)}</div>
-            <div><span class="label">College Name:</span> ${esc(newData.college_name || oldData.college_name)}</div>
+            <div><span class="label">Course Name:</span> ${esc(newData.course_name || oldData.course_name || '-')}</div>
+            <div><span class="label">College Name:</span> ${esc(newData.college_name || oldData.college_name || '-')}</div>
           </div>
         </div>
       </div>
@@ -772,7 +773,12 @@ async function renderPdf(htmlPath, pdfPath) {
       printBackground: true,
       preferCSSPageSize: true,
       timeout: 0,
-      margin: { top: '0', right: '0', bottom: '0', left: '0' }
+      margin: {
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0'
+      }
     });
   } finally {
     await browser.close();
@@ -783,7 +789,7 @@ function loadOldFromCache(regNo) {
   const file = getOldCachePath(regNo);
   if (!CONFIG.useCache || !fs.existsSync(file)) return null;
   const html = fs.readFileSync(file, 'utf8');
-  return html || null;
+  return html ? html : null;
 }
 
 function loadNewFromCache(regNo) {
@@ -809,44 +815,18 @@ function saveNewToCache(regNo, json) {
 }
 
 async function main() {
-  ensureFile(FILES.input);
   ensureFile(FILES.calc);
   ensureFile(FILES.audit);
   ensureDir(FILES.oldCacheDir);
   ensureDir(FILES.newCacheDir);
   resetOutputs();
 
-  const inputRegNos = loadInputRegNos();
-  const { rows: calcRowsAll, map: calcMap } = loadCalcMap();
+  const allCalcRows = loadCalcRows();
+  let calcRows = sortPenaltyRows(
+    allCalcRows.filter((row) => String(row.status).toUpperCase().includes('PENALTY_CONFIRMED'))
+  );
+
   const auditMap = loadAuditMap();
-
-  log(`notice_input reg nos: ${inputRegNos.length}`);
-  log(`penalty_calc rows: ${calcRowsAll.length}`);
-  log(`audit reg groups: ${auditMap.size}`);
-
-  let calcRows = [];
-
-  for (const regNo of inputRegNos) {
-    const calcRow = calcMap.get(regNo);
-
-    if (!calcRow) {
-      fs.appendFileSync(FILES.failed, `${regNo} | NOT_FOUND_IN_PENALTY_CALC\n`, 'utf8');
-      log(`${regNo} -> NOT_FOUND_IN_PENALTY_CALC`);
-      continue;
-    }
-
-    if (!String(calcRow.status).toUpperCase().includes('PENALTY_CONFIRMED')) {
-      fs.appendFileSync(FILES.failed, `${regNo} | STATUS_NOT_PENALTY_CONFIRMED | ${calcRow.status}\n`, 'utf8');
-      log(`${regNo} -> STATUS_NOT_PENALTY_CONFIRMED (${calcRow.status})`);
-      continue;
-    }
-
-    calcRows.push(calcRow);
-  }
-
-  calcRows = sortPenaltyRows(calcRows);
-
-  log(`matched penalty rows before preview cut: ${calcRows.length}`);
 
   if (CONFIG.previewMaxStudents !== null) {
     calcRows = calcRows.slice(
@@ -855,6 +835,8 @@ async function main() {
     );
   }
 
+  log(`penalty_calc rows: ${allCalcRows.length}`);
+  log(`audit reg groups: ${auditMap.size}`);
   log(`Penalty rows selected for PDF: ${calcRows.length}`);
 
   const rendered = [];
@@ -866,13 +848,13 @@ async function main() {
 
     if (!auditRows.length) {
       fs.appendFileSync(FILES.failed, `${row.reg_no} | NO_AUDIT_ROWS\n`, 'utf8');
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NO_AUDIT_ROWS -> ${resolvedRow.new_result_url || '-'}`);
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NO_AUDIT_ROWS`);
       continue;
     }
 
     if (!resolvedRow.old_result_url) {
       fs.appendFileSync(FILES.failed, `${row.reg_no} | MISSING_OLD_URL\n`, 'utf8');
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> MISSING_OLD_URL -> ${resolvedRow.new_result_url || '-'}`);
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> MISSING_OLD_URL`);
       continue;
     }
 
@@ -898,14 +880,14 @@ async function main() {
           `${row.reg_no} | OLD_FETCH_FAILED | ${resolvedRow.old_result_url} | ${oldFetch.reason}\n`,
           'utf8'
         );
-        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_FETCH_FAILED (${oldFetch.reason}) -> ${resolvedRow.old_result_url}`);
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_FETCH_FAILED (${oldFetch.reason})`);
         continue;
       }
 
       oldHtml = oldFetch.data;
       saveOldToCache(row.reg_no, oldHtml);
     } else {
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_CACHE_HIT -> ${resolvedRow.old_result_url}`);
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_CACHE_HIT`);
     }
 
     const newApiUrl = deriveNewApiUrl(resolvedRow);
@@ -925,14 +907,14 @@ async function main() {
           `${row.reg_no} | NEW_FETCH_FAILED | ${resolvedRow.new_result_url} | ${newFetch.reason}\n`,
           'utf8'
         );
-        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_FETCH_FAILED (${newFetch.reason}) -> ${resolvedRow.new_result_url}`);
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_FETCH_FAILED (${newFetch.reason})`);
         continue;
       }
 
       newJson = newFetch.data;
       saveNewToCache(row.reg_no, newJson);
     } else {
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_CACHE_HIT -> ${resolvedRow.new_result_url}`);
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_CACHE_HIT`);
     }
 
     try {
@@ -941,21 +923,21 @@ async function main() {
 
       if (!oldData.theory.length && !oldData.practical.length) {
         fs.appendFileSync(FILES.failed, `${row.reg_no} | OLD_PARSE_EMPTY | ${resolvedRow.old_result_url}\n`, 'utf8');
-        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_PARSE_EMPTY -> ${resolvedRow.old_result_url}`);
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_PARSE_EMPTY`);
         continue;
       }
 
       if (!newData.theory.length && !newData.practical.length) {
         fs.appendFileSync(FILES.failed, `${row.reg_no} | NEW_PARSE_EMPTY | ${resolvedRow.new_result_url}\n`, 'utf8');
-        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_PARSE_EMPTY -> ${resolvedRow.new_result_url}`);
+        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_PARSE_EMPTY`);
         continue;
       }
 
       rendered.push(renderCase(row, resolvedRow, auditRows, oldData, newData));
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OK -> ${resolvedRow.new_result_url}`);
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OK`);
     } catch (error) {
       fs.appendFileSync(FILES.failed, `${row.reg_no} | RENDER_FAILED | ${error.message}\n`, 'utf8');
-      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> RENDER_FAILED (${error.message}) -> ${resolvedRow.new_result_url}`);
+      log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> RENDER_FAILED (${error.message})`);
     }
   }
 
