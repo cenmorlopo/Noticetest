@@ -921,18 +921,6 @@ async function main() {
       const oldData = parseOldHtml(oldHtml, resolvedRow.old_result_url);
       const newData = parseNewJson(newJson, resolvedRow);
 
-      if (!oldData.theory.length && !oldData.practical.length) {
-        fs.appendFileSync(FILES.failed, `${row.reg_no} | OLD_PARSE_EMPTY | ${resolvedRow.old_result_url}\n`, 'utf8');
-        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OLD_PARSE_EMPTY`);
-        continue;
-      }
-
-      if (!newData.theory.length && !newData.practical.length) {
-        fs.appendFileSync(FILES.failed, `${row.reg_no} | NEW_PARSE_EMPTY | ${resolvedRow.new_result_url}\n`, 'utf8');
-        log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> NEW_PARSE_EMPTY`);
-        continue;
-      }
-
       rendered.push(renderCase(row, resolvedRow, auditRows, oldData, newData));
       log(`[${index + 1}/${calcRows.length}] ${row.reg_no} -> OK`);
     } catch (error) {
